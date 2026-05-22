@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>初一探险小游乐场</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- 统一导航条 -->
+  <nav id="mainNav" class="main-nav">
+    <div class="nav-container">
+      <h1 class="nav-title" onclick="showHomePage()">初一探险小游乐场</h1>
+      <button class="nav-back-btn" onclick="showLevelsPage()" id="navBackBtn">← 返回游戏大厅</button>
+    </div>
+  </nav>
+
+  <!-- 首页 -->
+  <div id="homePage" class="page">
+    <div class="container">
+      <h1>初一探险小游乐场</h1>
+      <div class="game-buttons">
+        <button class="game-btn" onclick="goToGame('reading')">故事拼图阅读</button>
+        <button class="game-btn" onclick="goToGame('classical')">文言小剧场</button>
+        <button class="game-btn" onclick="goToGame('english')">小书虫闯关</button>
+        <button class="game-btn" onclick="goToGame('diary')">英语一句话日记</button>
+        <button class="game-btn" onclick="goToGame('logic')">逻辑迷宫</button>
+        <button class="game-btn" onclick="goToGame('timeline')">时间线拼图</button>
+        <button class="game-btn" onclick="goToGame('geo')">世界小旅行</button>
+      </div>
+
+      <!-- 学习进度区域 -->
+      <div id="progressArea" class="progress-area">
+        <h3>📊 学习进度</h3>
+        <div id="progressList" class="progress-list">
+          <!-- 进度将由JS生成 -->
+        </div>
+      </div>
+
+      <!-- 成就按钮 -->
+      <button id="achievementsBtn" class="achievements-btn" onclick="showAchievementsPanel()">🏆 我的小成就</button>
+      
+      <!-- 重置进度按钮 -->
+      <button id="resetProgressBtn" class="reset-btn" onclick="resetAllProgress()">🔄 重置所有进度</button>
+    </div>
+  </div>
+
+  <!-- 成就面板 -->
+  <div id="achievementsPanel" class="achievements-panel hidden">
+    <div class="achievements-header">
+      <h3>🏆 我的成就</h3>
+      <button class="close-btn" onclick="hideAchievementsPanel()">×</button>
+    </div>
+    <div id="achievementsList" class="achievements-list">
+      <!-- 成就列表将由JS生成 -->
+    </div>
+  </div>
+
+  <!-- 成就解锁提示 -->
+  <div id="achievementToast" class="achievement-toast hidden">
+    🎉 解锁成就：<span id="toastAchievementName"></span>
+  </div>
+
+  <!-- 通用关卡列表页 -->
+  <div id="levelsPage" class="page hidden">
+    <div class="container">
+      <button class="back-btn" onclick="goBack()">← 返回首页</button>
+      <h1 id="gameTitle">选择关卡</h1>
+      <p class="subtitle">选择关卡开始游戏</p>
+      <div id="levelsList" class="levels-list">
+        <!-- 关卡按钮将由JS生成 -->
+      </div>
+    </div>
+  </div>
+
+  <!-- 故事拼图阅读游戏页面 -->
+  <div id="readingGamePage" class="page hidden">
+    <div class="container">
+      <button class="back-btn" onclick="goBackToLevels()">← 返回关卡列表</button>
+      <div id="readingGameHeader" class="game-header">
+        <h2>第 <span id="readingLevelNum">1</span> 关：<span id="readingStoryTitle">故事标题</span></h2>
+      </div>
+
+      <!-- 段落排序区 -->
+      <div id="paragraphsArea" class="paragraphs-area">
+        <p class="hint">拖动段落卡片，将它们排成正确的顺序</p>
+        <div id="paragraphsContainer" class="paragraphs-container">
+          <!-- 段落卡片将由JS生成 -->
+        </div>
+        <button id="submitOrderBtn" class="submit-btn" onclick="checkReadingOrder()">提交顺序</button>
+      </div>
+
+      <!-- 正确答案展示区 -->
+      <div id="correctStoryArea" class="correct-story-area hidden">
+        <div id="readingResultMessage" class="result-message"></div>
+        <div id="correctStory" class="correct-story"></div>
+        <button id="showReadingQuestionsBtn" class="submit-btn" onclick="showReadingQuestions()">回答问题</button>
+      </div>
+
+      <!-- 问答区 -->
+      <div id="readingQuestionsArea" class="questions-area hidden">
+        <h3>阅读理解</h3>
+        <div id="readingQuestionsContainer" class="questions-container">
+          <!-- 问题将由JS生成 -->
+        </div>
+        <button id="submitReadingAnswersBtn" class="submit-btn" onclick="checkReadingAnswers()">提交答案</button>
+        <div id="readingAnswersResult" class="answers-result hidden"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 文言小剧场游戏页面 -->
+  <div id="classicalGamePage" class="page hidden">
+    <div class="container">
+      <button class="back-btn" onclick="goBackToLevels()">← 返回关卡列表</button>
+      <div id="classicalGameHeader" class="game-header">
+        <h2>第 <span id="classicalLevelNum">1</span> 关：<span id="classicalTitle">标题</span></h2>
+      </div>
+
+      <!-- 文言题目区 -->
+      <div id="classicalItemsArea" class="classical-items-area">
+        <p class="hint">为每句文言选择正确的现代意思</p>
+        <div id="classicalItemsContainer" class="classical-items-container">
+          <!-- 题目将由JS生成 -->
+        </div>
+        <button id="submitClassicalBtn" class="submit-btn" onclick="checkClassicalAnswers()">提交答案</button>
+      </div>
+
+      <!-- 答案结果区 -->
+      <div id="classicalResultArea" class="classical-result-area hidden">
+        <div id="classicalResultContainer" class="classical-result-container">
+          <!-- 结果将由JS生成 -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 小书虫闯关游戏页面 -->
+  <div id="englishGamePage" class="page hidden">
+    <div class="container">
+      <button class="back-btn" onclick="goBackToLevels()">← 返回关卡列表</button>
+      <div id="englishGameHeader" class="game-header">
+        <h2>第 <span id="englishLevelNum">1</span> 关：<span id="englishTitle">标题</span></h2>
+      </div>
+
+      <!-- 英语阅读区 -->
+      <div id="englishReadingArea" class="english-reading-area">
+        <p class="hint">阅读短文，选择每个空白处最合适的词</p>
+        <div id="englishTextContainer" class="english-text-container">
+          <!-- 短文将由JS生成 -->
+        </div>
+        <button id="submitEnglishBtn" class="submit-btn" onclick="checkEnglishAnswers()">检查答案</button>
+      </div>
+
+      <!-- 答案结果区 -->
+      <div id="englishResultArea" class="english-result-area hidden">
+        <div id="englishResultText" class="english-result-text"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 英语一句话日记游戏页面 -->
+  <div id="diaryGamePage" class="page hidden">
+    <div class="container">
+      <button class="back-btn" onclick="goBackToLevels()">← 返回关卡列表</button>
+      <div id="diaryGameHeader" class="game-header">
+        <h2>第 <span id="diaryLevelNum">1</span> 关：<span id="diaryTitle">标题</span></h2>
+      </div>
+
+      <!-- 日记写作区 -->
+      <div id="diaryWritingArea" class="diary-writing-area">
+        <div id="diaryTemplate" class="diary-template">
+          <!-- 模板将由JS生成 -->
+        </div>
+        <div class="diary-textarea-container">
+          <textarea id="diaryTextarea" class="diary-textarea" placeholder="在这里写下你的英语日记..."></textarea>
+        </div>
+        <div id="diaryWordsContainer" class="diary-words-container">
+          <!-- 词汇按钮将由JS生成 -->
+        </div>
+        <div class="diary-buttons">
+          <button id="showSampleBtn" class="secondary-btn" onclick="showDiarySample()">随机示例</button>
+          <button id="submitDiaryBtn" class="submit-btn" onclick="submitDiary()">完成</button>
+        </div>
+        <div id="diarySampleArea" class="diary-sample-area hidden">
+          <!-- 示例将由JS生成 -->
+        </div>
+        <div id="diaryCompleteArea" class="diary-complete-area hidden">
+          <!-- 完成反馈将由JS生成 -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 逻辑迷宫游戏页面 -->
+  <div id="logicGamePage" class="page hidden">
+    <div class="container">
+      <button class="back-btn" onclick="goBackToLevels()">← 返回关卡列表</button>
+      <div id="logicGameHeader" class="game-header">
+        <h2>第 <span id="logicLevelNum">1</span> 关：<span id="logicTitle">标题</span></h2>
+      </div>
+
+      <!-- 逻辑题目区 -->
+      <div id="logicQuestionArea" class="logic-question-area">
+        <p id="logicDescription" class="logic-description">
+          <!-- 题目将由JS生成 -->
+        </p>
+        <div id="logicOptionsContainer" class="logic-options-container">
+          <!-- 选项将由JS生成 -->
+        </div>
+        <button id="submitLogicBtn" class="submit-btn" onclick="checkLogicAnswer()">提交答案</button>
+      </div>
+
+      <!-- 答案结果区 -->
+      <div id="logicResultArea" class="logic-result-area hidden">
+        <div id="logicResultContainer" class="logic-result-container">
+          <!-- 结果将由JS生成 -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 时间线拼图游戏页面 -->
+  <div id="timelineGamePage" class="page hidden">
+    <div class="container">
+      <button class="back-btn" onclick="goBackToLevels()">← 返回关卡列表</button>
+      <div id="timelineGameHeader" class="game-header">
+        <h2>第 <span id="timelineLevelNum">1</span> 关：<span id="timelineTitle">标题</span></h2>
+      </div>
+
+      <!-- 时间线区域 -->
+      <div id="timelineArea" class="timeline-area">
+        <p class="hint">拖动事件卡片，按时间顺序排列（从早到晚）</p>
+        <div id="timelineTrack" class="timeline-track">
+          <!-- 时间线将由JS生成 -->
+        </div>
+        <div id="timelineCardsContainer" class="timeline-cards-container">
+          <!-- 事件卡片将由JS生成 -->
+        </div>
+        <button id="submitTimelineBtn" class="submit-btn" onclick="checkTimelineOrder()">提交答案</button>
+      </div>
+
+      <!-- 答案结果区 -->
+      <div id="timelineResultArea" class="timeline-result-area hidden">
+        <div id="timelineResultContainer" class="timeline-result-container">
+          <!-- 结果将由JS生成 -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 世界小旅行游戏页面 -->
+  <div id="geoGamePage" class="page hidden">
+    <div class="container">
+      <button class="back-btn" onclick="goBackToLevels()">← 返回关卡列表</button>
+      <div id="geoGameHeader" class="game-header">
+        <h2>第 <span id="geoLevelNum">1</span> 关：<span id="geoTitle">标题</span></h2>
+      </div>
+
+      <!-- 地理题目区 -->
+      <div id="geoQuestionArea" class="geo-question-area">
+        <div id="geoClueContainer" class="geo-clue-container">
+          <p class="geo-clue-label">线索：</p>
+          <p id="geoClue" class="geo-clue">
+            <!-- 线索将由JS生成 -->
+          </p>
+        </div>
+        <div id="geoOptionsContainer" class="geo-options-container">
+          <!-- 选项将由JS生成 -->
+        </div>
+        <button id="submitGeoBtn" class="submit-btn" onclick="checkGeoAnswer()">提交答案</button>
+      </div>
+
+      <!-- 答案结果区 -->
+      <div id="geoResultArea" class="geo-result-area hidden">
+        <div id="geoResultContainer" class="geo-result-container">
+          <!-- 结果将由JS生成 -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="readingData.js"></script>
+  <script src="classicalData.js"></script>
+  <script src="englishReadingData.js"></script>
+  <script src="englishDiaryData.js"></script>
+  <script src="logicMazeData.js"></script>
+  <script src="timelineData.js"></script>
+  <script src="geoTravelData.js"></script>
+  <script src="achievementsData.js"></script>
+  <script src="main.js"></script>
+</body>
+</html>
