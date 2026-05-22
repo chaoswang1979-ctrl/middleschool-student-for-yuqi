@@ -468,6 +468,7 @@ function checkReadingAnswers() {
     
     options.forEach((opt, oIndex) => {
       opt.classList.remove('selected', 'correct', 'incorrect');
+      // 提交后才显示正确答案
       if (oIndex === question.answerIndex) {
         opt.classList.add('correct');
       } else if (oIndex === readingUserAnswers[qIndex]) {
@@ -480,11 +481,15 @@ function checkReadingAnswers() {
     }
   });
   
+  // 检查是否有下一关
+  const hasNextLevel = currentLevelIndex < readingLevels.length - 1;
+  
   readingAnswersResult.classList.remove('hidden');
   readingAnswersResult.className = `answers-result ${correctCount === totalQuestions ? 'success' : 'partial'}`;
   readingAnswersResult.innerHTML = `
     <h4>${correctCount === totalQuestions ? '🎉 全部答对了！' : '👍 继续加油！'}</h4>
     <p>你答对了 ${correctCount} 道题，共 ${totalQuestions} 道题</p>
+    ${hasNextLevel ? '<button class="next-level-btn" onclick="startReadingLevel(currentLevelIndex + 1)">➡️ 下一关</button>' : '<p>🏆 恭喜你完成了所有关卡！</p>'}
   `;
   
   if (correctCount === totalQuestions) {
@@ -563,6 +568,7 @@ function checkClassicalAnswers() {
     
     const optionsHTML = item.options.map((option, oIndex) => {
       let className = 'classical-option';
+      // 提交后才显示正确答案
       if (oIndex === item.answerIndex) className += ' correct';
       if (oIndex === classicalUserAnswers[itemIndex] && !isCorrect) className += ' incorrect';
       return `
@@ -583,6 +589,17 @@ function checkClassicalAnswers() {
     
     classicalResultContainer.appendChild(resultDiv);
   });
+  
+  // 检查是否有下一关
+  const hasNextLevel = currentLevelIndex < classicalLevels.length - 1;
+  
+  // 添加下一关按钮
+  const nextButton = document.createElement('div');
+  nextButton.className = 'classical-next-container';
+  nextButton.innerHTML = hasNextLevel ? 
+    '<button class="next-level-btn" onclick="startClassicalLevel(currentLevelIndex + 1)">➡️ 下一关</button>' :
+    '<p class="classical-completed">🏆 恭喜你完成了所有关卡！</p>';
+  classicalResultContainer.appendChild(nextButton);
   
   classicalResultArea.classList.remove('hidden');
   
@@ -686,16 +703,21 @@ function checkEnglishAnswers() {
     const buttons = englishTextContainer.querySelectorAll(`[data-blank="${blank.id}"].english-blank-btn`);
     buttons.forEach((btn, oIndex) => {
       btn.classList.remove('selected', 'correct', 'incorrect');
+      // 提交后才显示正确答案
       if (oIndex === blank.answerIndex) btn.classList.add('correct');
       if (oIndex === englishUserAnswers[blank.id] && !isCorrect) btn.classList.add('incorrect');
     });
   });
+  
+  // 检查是否有下一关
+  const hasNextLevel = currentLevelIndex < englishReadingLevels.length - 1;
   
   englishResultText.classList.remove('hidden');
   englishResultText.className = `english-result-text ${correctCount === totalBlanks ? 'success' : 'partial'}`;
   englishResultText.innerHTML = `
     <h4>${correctCount === totalBlanks ? '🎉 全部答对了！' : '👍 继续加油！'}</h4>
     <p>你答对了 ${correctCount} 个空，共 ${totalBlanks} 个空</p>
+    ${hasNextLevel ? '<button class="next-level-btn" onclick="startEnglishLevel(currentLevelIndex + 1)">➡️ 下一关</button>' : '<p>🏆 恭喜你完成了所有关卡！</p>'}
   `;
   
   if (correctCount === totalBlanks) {
@@ -761,11 +783,15 @@ function submitDiary() {
     return;
   }
   
+  // 检查是否有下一关
+  const hasNextLevel = currentLevelIndex < englishDiaryLevels.length - 1;
+  
   diaryCompleteArea.classList.remove('hidden');
   diaryCompleteArea.innerHTML = `
     <h3>🎉 Great Job!</h3>
     <p>You wrote an English sentence today!</p>
     <p style="margin-top: 15px; font-style: italic; color: #666;">Your diary: ${text}</p>
+    ${hasNextLevel ? '<button class="next-level-btn" onclick="startDiaryLevel(currentLevelIndex + 1)">➡️ 下一关</button>' : '<p>🏆 恭喜你完成了所有关卡！</p>'}
   `;
   
   const level = englishDiaryLevels[currentLevelIndex];
@@ -819,6 +845,7 @@ function checkLogicAnswer() {
   const options = logicOptionsContainer.querySelectorAll('.logic-option');
   options.forEach((opt, idx) => {
     opt.classList.remove('selected', 'correct', 'incorrect');
+    // 提交后才显示正确答案
     if (idx === level.answerIndex) {
       opt.classList.add('correct');
     } else if (idx === logicSelectedOption && !isCorrect) {
@@ -826,11 +853,15 @@ function checkLogicAnswer() {
     }
   });
   
+  // 检查是否有下一关
+  const hasNextLevel = currentLevelIndex < logicMazeLevels.length - 1;
+  
   logicResultArea.classList.remove('hidden');
   logicResultContainer.className = `logic-result-container ${isCorrect ? 'correct' : 'incorrect'}`;
   logicResultContainer.innerHTML = `
     <h4>${isCorrect ? '🎉 正确！你真棒！' : '❌ 不对哦，再想想！'}</h4>
     <p>${level.explanation}</p>
+    ${hasNextLevel ? '<button class="next-level-btn" onclick="startLogicLevel(currentLevelIndex + 1)">➡️ 下一关</button>' : '<p>🏆 恭喜你完成了所有关卡！</p>'}
   `;
   
   if (isCorrect) {
@@ -967,6 +998,9 @@ function checkTimelineOrder() {
   
   const isCorrect = JSON.stringify(userOrder) === JSON.stringify(level.correctOrder);
   
+  // 检查是否有下一关
+  const hasNextLevel = currentLevelIndex < timelineLevels.length - 1;
+  
   // 显示结果
   timelineResultArea.classList.remove('hidden');
   timelineResultContainer.innerHTML = '';
@@ -988,6 +1022,14 @@ function checkTimelineOrder() {
     
     timelineResultContainer.appendChild(resultItem);
   });
+  
+  // 添加下一关按钮
+  const nextButton = document.createElement('div');
+  nextButton.className = 'timeline-next-container';
+  nextButton.innerHTML = hasNextLevel ? 
+    '<button class="next-level-btn" onclick="startTimelineLevel(currentLevelIndex + 1)">➡️ 下一关</button>' :
+    '<p>🏆 恭喜你完成了所有关卡！</p>';
+  timelineResultContainer.appendChild(nextButton);
   
   if (isCorrect) {
     savePassedLevel('timeline', level.id);
@@ -1041,6 +1083,7 @@ function checkGeoAnswer() {
   const options = geoOptionsContainer.querySelectorAll('.geo-option');
   options.forEach((opt, idx) => {
     opt.classList.remove('selected', 'correct', 'incorrect');
+    // 提交后才显示正确答案
     if (idx === level.answerIndex) {
       opt.classList.add('correct');
     } else if (idx === geoSelectedOption && !isCorrect) {
@@ -1048,11 +1091,15 @@ function checkGeoAnswer() {
     }
   });
   
+  // 检查是否有下一关
+  const hasNextLevel = currentLevelIndex < geoTravelLevels.length - 1;
+  
   geoResultArea.classList.remove('hidden');
   geoResultContainer.className = `geo-result-container ${isCorrect ? 'correct' : 'incorrect'}`;
   geoResultContainer.innerHTML = `
     <h4>${isCorrect ? '🎉 正确！你真棒！' : `❌ 不对哦，答案是 ${level.options[level.answerIndex]}！`}</h4>
     <p>${level.intro}</p>
+    ${hasNextLevel ? '<button class="next-level-btn" onclick="startGeoLevel(currentLevelIndex + 1)">➡️ 下一关</button>' : '<p>🏆 恭喜你完成了所有关卡！</p>'}
   `;
   
   if (isCorrect) {
